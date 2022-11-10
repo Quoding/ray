@@ -180,6 +180,9 @@ class OneHotPreprocessor(Preprocessor):
     def _init_shape(self, obs_space: gym.Space, options: dict) -> List[int]:
         if isinstance(obs_space, gym.spaces.Discrete):
             return (self._obs_space.n,)
+        elif isinstance(obs_space, gym.spaces.MultiDiscrete):
+            # Binary MultiDiscrete is on 1 bit only, remove nonexistent second bit
+            return (np.sum(self._obs_space.nvec) - np.sum(self._obs_space.nvec == 2),)
         else:
             return (np.sum(self._obs_space.nvec),)
 
